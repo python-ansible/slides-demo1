@@ -1,26 +1,44 @@
-// addClass removeClass
-// init
-$('.images > img:nth-child(1)').addClass('current')
-$('.images > img:nth-child(2)').addClass('enter')
-$('.images > img:nth-child(3)').addClass('enter')
-
-// for
-// on one
-let n = 1
+// 主体
+let len = $('.images > img').length
+let n
+init()
 setInterval(() => {
-    $(`.images > img:nth-child(${x(n)})`).removeClass('current').addClass('leave')
+    makeLeave(getImage(n))
         .one('transitionend', (e) => {
-            $(e.currentTarget).removeClass('leave').addClass('enter')
+            makeEnter($(e.currentTarget))
         })
-    $(`.images > img:nth-child(${x(n+1)})`).removeClass('enter').addClass('current')
+    makeCurrent(getImage(n + 1))
     n += 1
 }, 3000)
 
+// 功能函数
+function makeLeave($node) {
+    return $node.removeClass('current').addClass('leave')
+}
+
+function makeEnter($node) {
+    return $node.removeClass('leave').addClass('enter')
+}
+
+function makeCurrent($node) {
+    return $node.remove('enter').addClass('current')
+}
+
+function getImage(n) {
+    return $(`.images > img:nth-child(${x(n)})`)
+}
+
+function init() {
+    n = 1
+    $(`.images > img:nth-child(${n})`).addClass('current')
+        .siblings().addClass('enter')
+}
+
 function x(n) {
-    if(n>3){
-        n = n % 3
-        if (n===0){
-            n = 3
+    if (n > len) {
+        n = n % len
+        if (n === 0) {
+            n = len
         }
     }
     return n
