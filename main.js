@@ -2,7 +2,7 @@
 let len = $('.images > img').length
 let n
 init()
-setInterval(() => {
+let timer = setInterval(() => {
     makeLeave(getImage(n))
         .one('transitionend', (e) => {
             makeEnter($(e.currentTarget))
@@ -10,6 +10,23 @@ setInterval(() => {
     makeCurrent(getImage(n + 1))
     n += 1
 }, 3000)
+
+//解决 setInterval 变慢
+//+ 窗口不可见时停止轮播 浏览器会偷懒
+document.addEventListener('visibilitychange', function (e) {
+    if (document.hidden){
+        window.clearInterval(timer)
+    } else {
+        timer = setInterval(() => {
+            makeLeave(getImage(n))
+                .one('transitionend', (e) => {
+                    makeEnter($(e.currentTarget))
+                })
+            makeCurrent(getImage(n + 1))
+            n += 1
+        }, 3000)
+    }
+})
 
 // 功能函数
 function makeLeave($node) {
